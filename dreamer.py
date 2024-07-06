@@ -3,11 +3,12 @@ import functools
 import os
 import pathlib
 import sys
-
+os.environ["PYOPENGL_PLATFORM"] = "osmesa"
+os.environ["MUJOCO_GL"] = "osmesa"
 os.environ["MUJOCO_GL"] = "osmesa"
 
 import numpy as np
-import ruamel.yaml as yaml
+from ruamel.yaml import YAML
 
 sys.path.append(str(pathlib.Path(__file__).parent))
 
@@ -20,6 +21,7 @@ from parallel import Parallel, Damy
 import torch
 from torch import nn
 from torch import distributions as torchd
+
 
 
 to_np = lambda x: x.detach().cpu().numpy()
@@ -340,10 +342,12 @@ def main(config):
 
 
 if __name__ == "__main__":
+    yaml = YAML(typ='safe', pure=True)
     parser = argparse.ArgumentParser()
     parser.add_argument("--configs", nargs="+")
     args, remaining = parser.parse_known_args()
-    configs = yaml.safe_load(
+
+    configs = yaml.load(
         (pathlib.Path(sys.argv[0]).parent / "configs.yaml").read_text()
     )
 
